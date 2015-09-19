@@ -52,5 +52,6 @@ function downloadBlob(request, callback) {
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
   if (request.action == 'crop') {
     downloadBlob(request, callback);
+    return true;
   }
 });
