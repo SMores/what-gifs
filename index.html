@@ -1,29 +1,33 @@
 
 <!-- saved from url=(0078)https://developer.chrome.com/extensions/examples/api/desktopCapture/index.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style>
-  body {
-    background: white;
-    display: -webkit-flex;
-    -webkit-justify-content: center;
-    -webkit-align-items: center;
-    -webkit-flex-direction: column;
-  }
-  video {
-    width: 640px;
-    height: 480px;
-    border: 1px solid #e2e2e2;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-  }
-</style>
-</head>
-<body>
-  <video id="video" autoplay=""></video>
-  <p>
-    <button id="start">Start</button>
-    <button id="cancel">Cancel</button>
-    <button id="startFromBackgroundPage">Start from background page</button>
-  </p>
-  <script src="./index_files/app.js"></script>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+      body {
+        background: white;
+        display: -webkit-flex;
+        -webkit-justify-content: center;
+        -webkit-align-items: center;
+        -webkit-flex-direction: column;
+      }
+      video {
+        width: 640px;
+        height: 480px;
+        border: 1px solid #e2e2e2;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" autoplay=""></video>
+    <p>
+      <button id="start">Start</button>
+    </p>
+    <script src="index_files/jquery-1.11.3.min.js"></script>
+    <script src="index_files/RecordRTC.js"></script>
+    <script src="index_files/gif-recorder.js"></script>
+    <script src="./index_files/app.js"></script>
 
-</body></html>
+  </body>
+</html>

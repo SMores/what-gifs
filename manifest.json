@@ -1,7 +1,7 @@
 {
-  "name": "Desktop Capture Example",
-  "description": "Show desktop media picker UI",
-  "version": "1",
+  "name": "What Gifs?",
+  "description": "Fuck Gifs. Make HTML5 video.",
+  "version": "0.1",
   "manifest_version": 2,
   "icons": {
     "16": "icon.png",
