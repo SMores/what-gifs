@@ -1,10 +1,18 @@
 {
   "name": "What Gifs?",
-  "version": "1.0",
+  "description": "Fuck Gifs. Make HTML5 video.",
+  "version": "0.1",
   "manifest_version": 2,
-  "description": "Make gifs n shit",
-  "browser_action": {
-    "default_popup": "front.html",
-    "default_icon": "icon.png"
-  }
+  "icons": {
+    "16": "icon.png",
+    "128": "icon.png"
+  },
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "permissions": [
+    "desktopCapture"
+  ]
 }
