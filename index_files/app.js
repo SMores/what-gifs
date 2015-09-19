@@ -40,12 +40,13 @@ function gotStream(stream) {
         chrome.runtime.sendMessage({
           'action': 'crop',
           'url': videoWebURL,
-          'width': 0,
-          'height': 0,
+          'width': 1920,
+          'height': 1200,
           'horizontal': 0,
           'vertical': 0,
         }, function(response) {
-          alert(response);
+          console.log("SUCCESS!");
+          console.log(response);
           video.src = videoWebURL;
           video.controls = true;
           video.loop = true;
