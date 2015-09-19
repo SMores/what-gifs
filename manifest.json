@@ -1,0 +1,9 @@
+{
+  "name": "What Gifs?",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Make gifs n shit",
+  "browser_action": {
+    "popup": "front.html"
+  }
+}
