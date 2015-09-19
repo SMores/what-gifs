@@ -17,13 +17,25 @@
         border: 1px solid #e2e2e2;
         box-shadow: 0 1px 1px rgba(0,0,0,0.2);
       }
+      section {
+        margin: 15px;
+      }
+      #sharing {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <video id="video" autoplay=""></video>
-    <p>
+    <section id="controls">
       <button id="start">Start</button>
-    </p>
+    </section>
+    <section id="sharing">
+      <button>Facebook</button>
+      <button>Imgur</button>
+      <button>Twitter</button>
+      <button>Instagram</button>
+    </section>
     <script src="index_files/jquery-1.11.3.min.js"></script>
     <script src="index_files/RecordRTC.js"></script>
     <script src="index_files/gif-recorder.js"></script>

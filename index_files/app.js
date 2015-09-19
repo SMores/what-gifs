@@ -26,7 +26,7 @@ function gotStream(stream) {
   localstream = stream;
   stream.onended = function() { console.log("Ended"); };
 
-  $('p').append($('<button id="record">Record</button>'));
+  $('#controls').append($('<button id="record">Record</button>'));
   $('#record').click(function() {
     options.video = video;
     recordRTC = RecordRTC(stream, options);
@@ -34,13 +34,26 @@ function gotStream(stream) {
     $('#record').html('Stop');
     $('#record').off('click');
     $('#record').click(function () {
+      $('#sharing').css({display: 'block'});
       recordRTC.stopRecording(function(videoWebURL) {
-        video.src = videoWebURL;
-        video.controls = true;
+        var recordedBlob = recordRTC.getBlob();
+        chrome.runtime.sendMessage({
+          'action': 'crop',
+          'url': videoWebURL,
+          'width': 0,
+          'height': 0,
+          'horizontal': 0,
+          'vertical': 0,
+        }, function(response) {
+          alert(response);
+          video.src = videoWebURL;
+          video.controls = true;
+          video.loop = true;
+        });
+        
         // $('body').append($('<img/>'));
         // $('img').src = videoWebURL;
 
-        var recordedBlob = recordRTC.getBlob();
         recordRTC.getDataURL(function(dataURL) { });
       });
     });
