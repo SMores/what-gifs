@@ -4,6 +4,7 @@
   "manifest_version": 2,
   "description": "Make gifs n shit",
   "browser_action": {
-    "popup": "front.html"
+    "default_popup": "front.html",
+    "default_icon": "icon.png"
   }
 }
