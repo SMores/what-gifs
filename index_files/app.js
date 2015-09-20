@@ -10,6 +10,10 @@ var options = {
   height: 1200
 };
 
+var startTime;
+var videoLength;
+var i = 0;
+
 // options = {
 //   type: 'gif',
 //   frameRate: 400,
@@ -18,19 +22,11 @@ var options = {
 //   height: 1200
 // };
 
-function string2ArrayBuffer(string, callback) {
-    var blob = new Blob([string]);
-    console.log(blob.size);
-    var f = new FileReader();
-    f.onload = function(e) {
-        callback(e.target.result);
-    };
-    f.readAsArrayBuffer(blob);
-}
-
 function processVideo(video, stream) {
   $('#sharing').css({display: 'block'});
   recordRTC.stopRecording(function(videoWebURL) {
+    videoLength = Date.now() - startTime;
+    console.log(videoLength);
     $('#record').html('Try Again');
     $('#record').off('click');
     $('#record').click(function() {
@@ -65,7 +61,8 @@ function processVideo(video, stream) {
       video.src = croppedURL;
       video.controls = true;
       video.loop = true;
-      
+      $('#subtitles').css({display: "block"});
+      addSlider();
     });
     
     // $('body').append($('<img/>'));
@@ -76,6 +73,7 @@ function processVideo(video, stream) {
 }
 
 function record(video, stream) {
+  startTime = Date.now();
   options.video = video;
   recordRTC = RecordRTC(stream, options);
   recordRTC.startRecording();
@@ -120,6 +118,34 @@ function onAccessApproved(id) {
 
 var pending_request_id = null;
 
+function addSlider() {
+  $('#input').append($('<p><label for="amount'+i+'">Second range:</label><input type="text" id="amount'+i+'" readonly style="border:0; color:#000000;"></p>'));
+  // $('#input').append($(
+  //   '<p>\
+  //   <label for="amount">Price range:</label>\
+  //   <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">\
+  //   </p>'));
+  $('#input').append($('<div id="slider-range' + i + '"></div><br>'));
+  $('#input').append($('<input id="sub' + i + '" type="text"></div><br><br>'));
+  $("#slider-range"+i ).slider({
+    range: true,
+    min: 0,
+    max: videoLength,
+    value: i,
+    values: [ 0, videoLength ],
+    slide: function( event, ui ) {
+      var low = ui.values[0] / 1000;
+      var high = ui.values[1] / 1000;
+      // console.log($(this).prev("p").children("input").attr("id"));
+      $( "#"+$(this).prev("p").children("input").attr("id") ).val(low + 
+        " - " + high);
+    }
+  });
+  $( "#amount"+i ).val($( "#slider-range"+i ).slider( "values", 0 ) +
+    " - " + ($( "#slider-range"+i ).slider( "values", 1 ) / 1000) );
+  i++;
+}
+
 $(document).ready(function() {
 
   function selectWindow(e) {
@@ -129,15 +155,27 @@ $(document).ready(function() {
 
   $('#start').on('click', selectWindow);
 
-  $('#cancel').on('click', function(e) {
-    if (pending_request_id !== null) {
-      chrome.desktopCapture.cancelChooseDesktopMedia(pending_request_id);
-    }
+  $('#add').click(function() {
+    console.log("Added!");
+    addSlider();
   });
 
-  $('#startFromBackgroundPage')
-      .on('click', function(e) {
-        chrome.runtime.sendMessage(
-            {}, function(response) { console.log(response.farewell); });
-      });
+  $('#submit').click(function() {
+    console.log("Checking all sliders and text:");
+    subtitles = [];
+    for (var j = 0; j < i; j++) {
+      var sub = {};
+      sub.start_time = $("#slider-range"+j).slider("values")[0];
+      sub.end_time = $("#slider-range"+j).slider("values")[1];
+      sub.text = $("#sub"+j).val();
+      subtitles.push(sub);
+    }
+    chrome.runtime.sendMessage({
+      'action': 'subtitle',
+      'url': video.src,
+      'subtitles': subtitles
+    }, function(subbedURL) {
+      video.src = subbedURL;
+    });
+  });
 });
