@@ -18,12 +18,22 @@ var options = {
 //   height: 1200
 // };
 
+function string2ArrayBuffer(string, callback) {
+    var blob = new Blob([string]);
+    console.log(blob.size);
+    var f = new FileReader();
+    f.onload = function(e) {
+        callback(e.target.result);
+    };
+    f.readAsArrayBuffer(blob);
+}
+
 function gotStream(stream) {
   $('#start').remove();
   console.log("Received local stream");
   var video = document.querySelector("video");
+  console.log(stream);
   video.src = URL.createObjectURL(stream);
-  localstream = stream;
   stream.onended = function() { console.log("Ended"); };
 
   $('#controls').append($('<button id="record">Record</button>'));
@@ -44,12 +54,11 @@ function gotStream(stream) {
           'height': 1200,
           'horizontal': 0,
           'vertical': 0,
-        }, function(response) {
-          console.log("SUCCESS!");
-          console.log(response);
-          video.src = videoWebURL;
+        }, function(croppedURL) {
+          video.src = croppedURL;
           video.controls = true;
           video.loop = true;
+          
         });
         
         // $('body').append($('<img/>'));
