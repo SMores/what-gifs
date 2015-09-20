@@ -14,6 +14,8 @@ var startTime;
 var videoLength;
 var i = 0;
 
+var pending_request_id = null;
+
 // options = {
 //   type: 'gif',
 //   frameRate: 400,
@@ -24,8 +26,8 @@ var i = 0;
 
 function processVideo(video, stream) {
   $('#sharing').css({display: 'block'});
+  videoLength = Date.now() - startTime;
   recordRTC.stopRecording(function(videoWebURL) {
-    videoLength = Date.now() - startTime;
     console.log(videoLength);
     $('#record').html('Try Again');
     $('#record').off('click');
@@ -38,15 +40,13 @@ function processVideo(video, stream) {
     });
     $('#controls').append($('<button id="reset">Pick Another Window</button>'));
     $('#reset').click(function(e) {
-      video.scr = '';
+      video.scr = false;
       video.controls = false;
       video.loop = false;
       $(this).remove();
-      $('#record').html('Record');
-      $('#record').off('click');
-      $('#record').click(function() {
-        record(video, stream);
-      });
+      $('#record').remove()
+      $('#subtitles').css({display: "none"});
+      $('#sharing').css({display: "none"});
       selectWindow(e);
     });
     var recordedBlob = recordRTC.getBlob();
@@ -77,6 +77,7 @@ function record(video, stream) {
   options.video = video;
   recordRTC = RecordRTC(stream, options);
   recordRTC.startRecording();
+  startTime = Date.now();
   $('#record').html('Stop');
   $('#record').off('click');
   $('#record').click(function () {
@@ -116,8 +117,6 @@ function onAccessApproved(id) {
   }, gotStream, getUserMediaError);
 }
 
-var pending_request_id = null;
-
 function addSlider() {
   $('#input').append($('<p><label for="amount'+i+'">Second range:</label><input type="text" id="amount'+i+'" readonly style="border:0; color:#000000;"></p>'));
   // $('#input').append($(
@@ -146,12 +145,12 @@ function addSlider() {
   i++;
 }
 
-$(document).ready(function() {
+function selectWindow(e) {
+  pending_request_id = chrome.desktopCapture.chooseDesktopMedia(
+    ["screen", "window"], onAccessApproved);
+}
 
-  function selectWindow(e) {
-    pending_request_id = chrome.desktopCapture.chooseDesktopMedia(
-        ["screen", "window"], onAccessApproved);
-  }
+$(document).ready(function() {
 
   $('#start').on('click', selectWindow);
 
