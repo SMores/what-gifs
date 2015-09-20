@@ -21,7 +21,7 @@ $(document).ready(function() {
       value: i,
       values: [ 0, milliseconds ],
       slide: function( event, ui ) {
-        console.log($(this).prev("p").children("input").attr("id"));
+        // console.log($(this).prev("p").children("input").attr("id"));
         $( "#"+$(this).prev("p").children("input").attr("id") ).val(ui.values[ 0 ] + 
           " - " + ui.values[ 1 ] );
       }
@@ -42,12 +42,23 @@ $(document).ready(function() {
     // TODO
     // send data to server for ffmpeg
     console.log("Checking all sliders and text:");
+    var json = {}
+    // TODO GET VIDEO FILENAME
+    json.video = 'PLEASE HELP';
+    json.subtitles = []
     for (var j = 0; j < i; j++) {
+      var sub = {}
+      sub.start_time = $("#slider-range"+j).slider("values")[0];
+      sub.end_time = $("#slider-range"+j).slider("values")[1];
+      sub.text = $("#sub"+j).val();
+      json.subtitles.push(sub);
       var str = "";
       str += $("#slider-range"+j).slider("values")[0] + " ";
       str += $("#slider-range"+j).slider("values")[1] + " ";
       str += $("#sub"+j).val();
       console.log(str);
     }
+    // json is ready to be sent
+    console.log(json);
   });
 });
