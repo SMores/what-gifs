@@ -10,6 +10,9 @@ var options = {
   height: 1200
 };
 
+var startTime;
+var videoLength;
+
 // options = {
 //   type: 'gif',
 //   frameRate: 400,
@@ -31,6 +34,8 @@ function string2ArrayBuffer(string, callback) {
 function processVideo(video, stream) {
   $('#sharing').css({display: 'block'});
   recordRTC.stopRecording(function(videoWebURL) {
+    videoLength = Date.now() - startTime;
+    console.log(videoLength);
     $('#record').html('Try Again');
     $('#record').off('click');
     $('#record').click(function() {
@@ -76,6 +81,7 @@ function processVideo(video, stream) {
 }
 
 function record(video, stream) {
+  startTime = Date.now();
   options.video = video;
   recordRTC = RecordRTC(stream, options);
   recordRTC.startRecording();
