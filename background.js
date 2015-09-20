@@ -6,7 +6,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
   chrome.app.window.create('index.html', {
     bounds: {
       width: 700,
-      height: 600
+      height: 750
     }
   });
 });
@@ -70,7 +70,6 @@ function requestCrop(video, request, callback) {
     processData: false,
     type: 'POST',
     success: function(response) {
-      console.log(response);
       url = URL.createObjectURL(response);
       callback(url);
     }
@@ -78,7 +77,27 @@ function requestCrop(video, request, callback) {
 }
 
 
-function downloadBlob(request, callback) {
+function requestSub (video, request, callback) {
+  data = new FormData();
+  data.append('video', video);
+  data.append('subtitles', JSON.stringify(request.subtitles));
+  $.ajax("http://127.0.0.1:5000/subtitle", {
+    contentType: false,
+    data: data,
+    mimeType: 'video/webm',
+    dataType: 'binary',
+    cache: false,
+    processData: false,
+    type: 'POST',
+    success: function(response) {
+      url = URL.createObjectURL(response);
+      callback(url);
+    }
+  });
+}
+
+
+function downloadBlob(request, next, callback) {
   var xhr = new XMLHttpRequest();
     xhr.open('GET', request.url, true);
     xhr.responseType = 'arraybuffer';
@@ -86,7 +105,7 @@ function downloadBlob(request, callback) {
       if (this.status == 200) {
         var video = new Blob([this.response], {type: 'video/webm'});
         // myBlob is now the blob that the object URL pointed to.
-        requestCrop(video, request, callback);
+        next(video, request, callback);
       }
     };
     xhr.send();
@@ -95,7 +114,11 @@ function downloadBlob(request, callback) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
   if (request.action == 'crop') {
-    downloadBlob(request, callback);
+    downloadBlob(request, requestCrop, callback);
+    return true;
+  }
+  else if (request.action == 'subtitle') {
+    downloadBlob(request, requestSub, callback);
     return true;
   }
 });
