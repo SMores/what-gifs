@@ -154,8 +154,6 @@ $(document).ready(function() {
   });
 
   $('#submit').click(function() {
-    $('#input').empty();
-    $('#subtitles').css({display: 'none'});
     subtitles = [];
     optimize = $('#optimize').prop('checked');
     for (var j = 0; j < i; j++) {
@@ -165,6 +163,8 @@ $(document).ready(function() {
       sub.text = $("#sub"+j).val();
       subtitles.push(sub);
     }
+    $('#input').empty();
+    $('#subtitles').css({display: 'none'});
     chrome.runtime.sendMessage({
       'action': 'subtitle',
       'url': video.src,
