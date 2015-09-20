@@ -81,10 +81,11 @@ function requestSub (video, request, callback) {
   data = new FormData();
   data.append('video', video);
   data.append('subtitles', JSON.stringify(request.subtitles));
+  data.append('optimize', request.optimize);
   $.ajax("http://127.0.0.1:5000/subtitle", {
     contentType: false,
     data: data,
-    mimeType: 'video/webm',
+    mimeType: 'image/gif',
     dataType: 'binary',
     cache: false,
     processData: false,

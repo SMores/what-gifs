@@ -25,31 +25,10 @@ var pending_request_id = null;
 // };
 
 function processVideo(video, stream) {
-  $('#sharing').css({display: 'block'});
+  $('#record').css({display: "none"});
+  $('#record').off('click');
   videoLength = Date.now() - startTime;
   recordRTC.stopRecording(function(videoWebURL) {
-    console.log(videoLength);
-    $('#record').html('Try Again');
-    $('#record').off('click');
-    $('#record').click(function() {
-      $('#reset').remove();
-      video.src = URL.createObjectURL(stream);
-      video.controls = false;
-      video.loop = false;
-      record(video, stream);
-    });
-    $('#controls').append($('<button id="reset">Pick Another Window</button>'));
-    $('#reset').click(function(e) {
-      video.scr = false;
-      video.controls = false;
-      video.loop = false;
-      $(this).remove();
-      $('#record').remove()
-      $('#subtitles').css({display: "none"});
-      $('#sharing').css({display: "none"});
-      selectWindow(e);
-    });
-    var recordedBlob = recordRTC.getBlob();
     chrome.runtime.sendMessage({
       'action': 'crop',
       'url': videoWebURL,
@@ -58,17 +37,32 @@ function processVideo(video, stream) {
       'horizontal': 0,
       'vertical': 0,
     }, function(croppedURL) {
+      $('#record').html('Try Again');
+      $('#record').css({display: 'inline-block'});
+      $('#record').click(function() {
+        $('#reset').remove();
+        video.src = URL.createObjectURL(stream);
+        video.controls = false;
+        video.loop = false;
+        record(video, stream);
+      });
+      $('#controls').append($('<button id="reset">Pick Another Window</button>'));
+      $('#reset').click(function(e) {
+        video.scr = false;
+        video.controls = false;
+        video.loop = false;
+        $(this).remove();
+        $('#record').remove();
+        $('#subtitles').css({display: "none"});
+        $('#sharing').css({display: "none"});
+        selectWindow(e);
+      });
       video.src = croppedURL;
       video.controls = true;
       video.loop = true;
       $('#subtitles').css({display: "block"});
       addSlider();
     });
-    
-    // $('body').append($('<img/>'));
-    // $('img').src = videoWebURL;
-
-    recordRTC.getDataURL(function(dataURL) { });
   });
 }
 
@@ -160,8 +154,10 @@ $(document).ready(function() {
   });
 
   $('#submit').click(function() {
-    console.log("Checking all sliders and text:");
+    $('#input').empty();
+    $('#subtitles').css({display: 'none'});
     subtitles = [];
+    optimize = $('#optimize').prop('checked');
     for (var j = 0; j < i; j++) {
       var sub = {};
       sub.start_time = $("#slider-range"+j).slider("values")[0];
@@ -172,9 +168,16 @@ $(document).ready(function() {
     chrome.runtime.sendMessage({
       'action': 'subtitle',
       'url': video.src,
-      'subtitles': subtitles
+      'subtitles': subtitles,
+      'optimize': optimize
     }, function(subbedURL) {
-      video.src = subbedURL;
+      $('#sharing').css({display: 'block'});
+      // video.src = subbedURL;
+      $(video).css({display: "none"});
+      $img = $('<img width="640">');
+      $('body').prepend($img);
+      $img.attr({src: subbedURL});
+      $('a').attr({href: subbedURL, download: 'screencap.gif'});
     });
   });
 });
