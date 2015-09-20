@@ -3,6 +3,11 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="sliders/jquery-ui-themes-1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="sliders/jquery-ui-1.11.4/external/jquery/jquery.js"></script>
+    <script src="sliders/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+    <script src="sliders/slider.js"></script>
     <style>
       body {
         background: white;
@@ -20,23 +25,32 @@
       section {
         margin: 15px;
       }
-      #sharing {
+      #sharing, #subtitles {
         display: none;
       }
     </style>
   </head>
   <body>
-    <video id="video" autoplay=""></video>
+    <video id="video" src="../webm-edit/subtitle/dog.webm" type="video/webm" controls></video>
     <section id="controls">
       <button id="start">Start</button>
     </section>
+
+    <section id="subtitles">
+      <div id="input" style="text-align:center"></div>
+      <div id="subtitle_buttons">
+        <button id="add">Add slider</bottom>
+        <br>
+        <button id="check">Slider values!</button>
+      </div>
+    </section>
+
     <section id="sharing">
       <button>Facebook</button>
       <button>Imgur</button>
       <button>Twitter</button>
       <button>Instagram</button>
     </section>
-    <script src="index_files/jquery-1.11.3.min.js"></script>
     <script src="index_files/RecordRTC.js"></script>
     <script src="index_files/gif-recorder.js"></script>
     <script src="./index_files/app.js"></script>
